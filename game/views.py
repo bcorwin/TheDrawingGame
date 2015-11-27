@@ -1,7 +1,7 @@
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 
-from .forms import SaveImgForm
+from .forms import SaveImgForm, firstRound
 
 from game.models import Image_test
 
@@ -31,3 +31,12 @@ def image(request, ImageID):
     data = {'image': image}
     
     return render(request, 'image.html', data)
+    
+def show_round(request, code):
+    if code in ['', None]:
+        form = firstRound(initial={'round_type': "T"})
+    else:
+        pass
+        #get the round type and make proper form
+    
+    return render(request, 'round.html', {'form': form})
