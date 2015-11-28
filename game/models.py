@@ -49,6 +49,20 @@ class Round(models.Model):
     inserted_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     
+    def view_submission(self):
+        if self.round_type == "P":
+            out = '<img  src="data:image/png;base64,' + self.submission + '" >'
+            #out = "<a href='" + "www.google.com" + "'>View</a>"
+            #out = u"<a href='%s'>View</a>" % 'http://www.google.com'
+        else:
+            if len(self.submission) > 160:
+                out = self.submission[0:159]
+                out += "..."
+            else:
+                out = self.submission
+        return(out)
+    view_submission.allow_tags = True
+        
     def check_email(self):
         emails = Round.objects.filter(game=self.game)
         emails = [r.email_address.upper() for r in emails]
