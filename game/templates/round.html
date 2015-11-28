@@ -1,15 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+        {% load staticfiles %}
+        <link rel="stylesheet" href="{% static 'Drawingboard/css/drawingboard.css' %}">
+        
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script type="text/javascript" src="{% static 'Drawingboard/js/utils.js' %}"></script>
+		<script type="text/javascript" src="{% static 'Drawingboard/js/board.js' %}"></script>
+		<script type="text/javascript" src="{% static 'Drawingboard/js/controls/control.js' %}"></script>
+		<script type="text/javascript" src="{% static 'Drawingboard/js/controls/color.js' %}"></script>
+		<script type="text/javascript" src="{% static 'Drawingboard/js/controls/drawingmode.js' %}"></script>
+		<script type="text/javascript" src="{% static 'Drawingboard/js/controls/navigation.js' %}"></script>
+		<script type="text/javascript" src="{% static 'Drawingboard/js/controls/size.js' %}"></script>
+		<script type="text/javascript" src="{% static 'Drawingboard/js/controls/download.js' %}"></script>
 	</head>
 	<body>
-    
-    <form action="/game/submit/" method="post">
-    {{ form.as_p }}
-    <br><input type="submit" value="Submit" >
-    
-    <!-- <img  src="data:image/png;base64,{{ image }}" > -->
+        
+        {% if type == "F" %}
+            <form action="/game/" method="post">
+                {% csrf_token %}
+                {{ form1.as_p }}
+                {{ form2.as_p }}
+                <input type="hidden" name="type" value="{{type}}">
+            <br><input type="submit" value="Submit" >
+        {% elif type == "P" %}
+            {{ round.submission}}
+            <div id="canvasDiv"></div>
+            
+            <style>
+                #canvasDiv {
+                    width: 1200px;
+                    height: 600px;
+                }
+            </style>
 
+            <script type="text/javascript">
+                var canvas = new DrawingBoard.Board("canvasDiv");
+                canvas.addControl('Download');
+                
+                function onsubmitform() {
+                   //get drawingboard content
+                  var img = canvas.getImg();
+                  
+                  //we keep drawingboard content only if it's not the 'blank canvas'
+                  var imgInput = (canvas.blankCanvas == img) ? '' : img;
+                  
+                  //put the drawingboard content in the form field to send it to the server
+                  document.submit_img_form.img.value = imgInput
+                };
+            </script>
+            
+            <form name="submit_img_form" action="/game/" method="post" onsubmit = "return onsubmitform();">
+                {% csrf_token %}
+                {{ form3.as_p }}
+                {{ form2.as_p }}
+                <input type="hidden" name="type" value="{{type}}">
+                <input type="hidden" name="round_type" value="{{type}}">
+                <input type="hidden" name="game" value="{{round.game.id}}">
+                <input type="submit" value="Submit" >
+            </form>
+        {% elif type == "T" %}
+            <img  src="data:image/png;base64,{{ round.submission }}" >
+            <form action="/game/" method="post">
+                {% csrf_token %}
+                {{ form2.as_p }}
+                <input type="hidden" name="type" value="{{type}}">
+                <input type="hidden" name="round_type" value="{{type}}">
+                <input type="hidden" name="game" value="{{round.game.id}}">
+            <br><input type="submit" value="Submit" >
+        {% endif %}
 	</body>
 </html>

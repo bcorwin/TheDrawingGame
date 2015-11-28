@@ -1,42 +1,65 @@
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
+from django.template.context_processors import csrf
 
-from .forms import SaveImgForm, firstRound
-
-from game.models import Image_test
-
-# Create your views here.
-def canvas(request):
-    img = None
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = SaveImgForm(request.POST)
-        # check whether it's valid:
-        
-        if form.is_valid():
-            img = form.cleaned_data["img"].replace("data:image/png;base64,", "")
-            
-            i = Image_test(image = img)
-            i.save()
-            
-            return HttpResponseRedirect('')
-    # if a GET (or any other method) we'll create a blank form
-    else: form = SaveImgForm()
-    
-    return render(request, 'canvas.html', {'form': form})
-    
-def image(request, ImageID):
-    image = Image_test.objects.get(pk=ImageID).image
-    data = {'image': image}
-    
-    return render(request, 'image.html', data)
+from game.forms import SaveImgForm, make_game, make_new_round, make_picture_round,make_text_round
+from game.do import get_round, get_game
     
 def show_round(request, code):
-    if code in ['', None]:
-        form = firstRound(initial={'round_type': "T"})
+    form1 = None
+    form2 = None
+    form3 = None
+    type = None
+    round = None
+    if request.method == 'POST':
+        type = request.POST['type']
+        if type == "F":
+            form1 = make_game(request.POST, prefix="form1")
+            form2 = make_new_round(request.POST, prefix="form2")
+            if form1.is_valid() and form2.is_valid():
+                g = form1.save()
+                r = form2.save(commit=False)
+                r.game = g
+                r.save()
+                return HttpResponse("Thanks for playing!")
+        elif type == "P":
+            form2 = make_picture_round(request.POST, prefix="form2")
+            form3 = SaveImgForm(request.POST)
+            if form2.is_valid() and form3.is_valid():
+                r = form2.save(commit=False)
+                r.game = get_game(request.POST['game'])
+                r.submission = form3.cleaned_data["img"].replace("data:image/png;base64,", "")
+                r.save()
+                return HttpResponse("Thanks for playing!")
+        elif type == "T":
+            form2 = make_picture_round(request.POST, prefix="form2")
+            if form2.is_valid():
+                r = form2.save(commit=False)
+                r.game = get_game(request.POST['game'])
+                r.save()
+                return HttpResponse("Thanks for playing!")
+
+        return HttpResponse(str(form2.errors))
     else:
-        pass
-        #get the round type and make proper form
-    
-    return render(request, 'round.html', {'form': form})
+        if code in ['', None]:
+            form1 = make_game(prefix="form1")
+            form2 = make_new_round(prefix="form2")
+            form3 = None
+            round = None
+            type = "F"
+        else:
+            round = get_round(code)
+            form1 = None
+            if round.round_type == "P":
+                type = "T"
+                form2 = make_text_round(prefix="form2")
+            else:
+                type = "P"
+                form2 = make_picture_round(prefix="form2")
+            form3 = SaveImgForm()
+            #get the round type and make proper form
+            
+    out = {'form1': form1, 'form2': form2, 'form3': form3, 'type': type, 'round': round}
+    out.update(csrf(request))
+    print(form3)
+    return render(request, 'round.html', out)
