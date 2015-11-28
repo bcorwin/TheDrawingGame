@@ -27,7 +27,7 @@ class Game(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.round_code = self.new_code()
-        super(Round, self).save(*args, **kwargs)
+        super(Game, self).save(*args, **kwargs)
     
     def __str__(self):
         return(self.game_code)
@@ -62,7 +62,17 @@ class Round(models.Model):
             self.round_number = g[0].round_number + 1 if g.exists() else 1
             self.round_type = "T" if self.round_number % 2 == 1 else "P"
             self.round_code = self.new_code()
-        super(Round, self).save(*args, **kwargs)
+            
+            super(Round, self).save(*args, **kwargs)
+            
+            #Set previous round to completed
+            prev = Round.objects.filter(game=self.game).order_by('-round_number')
+            if len(prev) > 1:
+                last_round = prev[1]
+                last_round.completed = True
+                last_round.save()
+        else:
+            super(Round, self).save(*args, **kwargs)
     
     def __str__(self):
         return(self.round_code)

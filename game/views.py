@@ -61,5 +61,4 @@ def show_round(request, code):
             
     out = {'form1': form1, 'form2': form2, 'form3': form3, 'type': type, 'round': round}
     out.update(csrf(request))
-    print(form3)
     return render(request, 'round.html', out)
