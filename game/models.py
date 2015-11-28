@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 from random import choice
 from string import ascii_letters
 
@@ -48,6 +49,14 @@ class Round(models.Model):
     inserted_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     
+    def check_email(self):
+        emails = Round.objects.filter(game=self.game)
+        emails = [r.email_address.upper() for r in emails]
+        emails += [self.game.email_address.upper()]
+
+        if self.email_address.upper() in emails:
+            raise ValidationError(('').join(["The email address, ", self.email_address, ", has already been used this game."]))
+    
     def new_code(self):
         out = self.round_code
         chk = out in [r.round_code for r in Round.objects.all()]
@@ -58,12 +67,26 @@ class Round(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.pk:
-            g = Round.objects.filter(game=self.game).order_by('-round_number')
-            self.round_number = g[0].round_number + 1 if g.exists() else 1
-            self.round_type = "T" if self.round_number % 2 == 1 else "P"
+            r_list = Round.objects.filter(game=self.game).order_by('-round_number')
+            if r_list.exists():
+                r = r_list[0]
+                self.round_number = r.round_number + 1
+                if self.round_number > r.game.game_length: raise ValidationError("Game has been completed. Cannot add another round.")
+            else: self.round_number = 1
             self.round_code = self.new_code()
+            self.check_email()
             
             super(Round, self).save(*args, **kwargs)
+            
+            #The below should only run if the above save is completed successfully
+            
+            #If game is complete, mark it as so
+            g = self.game 
+            if self.round_number >= g.game_length:
+                g.completed = True
+                g.save()
+                self.completed = True
+                self.save()
             
             #Set previous round to completed
             prev = Round.objects.filter(game=self.game).order_by('-round_number')

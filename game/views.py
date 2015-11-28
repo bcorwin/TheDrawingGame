@@ -28,6 +28,7 @@ def show_round(request, code):
             if form2.is_valid() and form3.is_valid():
                 r = form2.save(commit=False)
                 r.game = get_game(request.POST['game'])
+                r.round_type = "P"
                 r.submission = form3.cleaned_data["img"].replace("data:image/png;base64,", "")
                 r.save()
                 return HttpResponse("Thanks for playing!")
@@ -36,6 +37,7 @@ def show_round(request, code):
             if form2.is_valid():
                 r = form2.save(commit=False)
                 r.game = get_game(request.POST['game'])
+                r.round_type = "T"
                 r.save()
                 return HttpResponse("Thanks for playing!")
 
