@@ -51,7 +51,7 @@ class Round(models.Model):
     
     def view_submission(self):
         if self.round_type == "P":
-            out = '<img  src="data:image/png;base64,' + self.submission + '" >'
+            out = '<img  src="data:image/png;base64,' + self.submission + '" width="200">'
             #out = "<a href='" + "www.google.com" + "'>View</a>"
             #out = u"<a href='%s'>View</a>" % 'http://www.google.com'
         else:
@@ -66,7 +66,7 @@ class Round(models.Model):
     def check_email(self):
         emails = Round.objects.filter(game=self.game)
         emails = [r.email_address.upper() for r in emails]
-        emails += [self.game.email_address.upper()]
+        if self.round_number != self.game.game_length: emails += [self.game.email_address.upper()]
 
         if self.email_address.upper() in emails:
             raise ValidationError(('').join(["The email address, ", self.email_address, ", has already been used this game."]))

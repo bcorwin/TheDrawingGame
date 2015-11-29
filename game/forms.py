@@ -24,3 +24,13 @@ class make_text_round(forms.ModelForm):
     class Meta:
         model = Round
         fields = ["submission", "display_name", "email_address"]
+        
+class make_last_text(forms.ModelForm):
+    class Meta:
+        model = Round
+        fields = ["submission", "display_name"]
+        
+class make_last_picture(forms.ModelForm):
+    class Meta:
+        model = Round
+        fields = ["display_name"]

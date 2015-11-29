@@ -5,7 +5,7 @@ class roundInline(admin.TabularInline):
     model = Round
     fields = ['round_number', 'round_code', 'email_address', 'display_name', 'view_submission', 'completed']
     readonly_fields = fields
-    show_change_link = True
+    show_change_link = False
     extra = 0
 
 class gameAdmin(admin.ModelAdmin):
@@ -21,4 +21,3 @@ class roundAdmin(admin.ModelAdmin):
     
 admin.site.register(Game, gameAdmin)
 admin.site.register(Round, roundAdmin)
-#Show images in admin not base 64

@@ -3,64 +3,29 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template.context_processors import csrf
 
 from game.forms import SaveImgForm, make_game, make_new_round, make_picture_round,make_text_round
-from game.do import get_round, get_game
+from game.do import get_round, get_game, select_forms, gen_round_response
     
 def show_round(request, code):
-    form1 = None
-    form2 = None
-    form3 = None
-    type = None
     round = None
+    type = None
+    last_round = False
+    
     if request.method == 'POST':
-        type = request.POST['type']
-        if type == "F":
-            form1 = make_game(request.POST, prefix="form1")
-            form2 = make_new_round(request.POST, prefix="form2")
-            if form1.is_valid() and form2.is_valid():
-                g = form1.save()
-                r = form2.save(commit=False)
-                r.game = g
-                r.save()
-                return HttpResponse("Thanks for playing!")
-        elif type == "P":
-            form2 = make_picture_round(request.POST, prefix="form2")
-            form3 = SaveImgForm(request.POST)
-            if form2.is_valid() and form3.is_valid():
-                r = form2.save(commit=False)
-                r.game = get_game(request.POST['game'])
-                r.round_type = "P"
-                r.submission = form3.cleaned_data["img"].replace("data:image/png;base64,", "")
-                r.save()
-                return HttpResponse("Thanks for playing!")
-        elif type == "T":
-            form2 = make_picture_round(request.POST, prefix="form2")
-            if form2.is_valid():
-                r = form2.save(commit=False)
-                r.game = get_game(request.POST['game'])
-                r.round_type = "T"
-                r.save()
-                return HttpResponse("Thanks for playing!")
-
-        return HttpResponse(str(form2.errors))
+        return HttpResponse(gen_round_response(request.POST))
     else:
-        if code in ['', None]:
-            form1 = make_game(prefix="form1")
-            form2 = make_new_round(prefix="form2")
-            form3 = None
-            round = None
-            type = "F"
-        else:
+        if code not in ['', None]:
             round = get_round(code)
-            form1 = None
-            if round.round_type == "P":
-                type = "T"
-                form2 = make_text_round(prefix="form2")
-            else:
-                type = "P"
-                form2 = make_picture_round(prefix="form2")
-            form3 = SaveImgForm()
-            #get the round type and make proper form
-            
-    out = {'form1': form1, 'form2': form2, 'form3': form3, 'type': type, 'round': round}
-    out.update(csrf(request))
-    return render(request, 'round.html', out)
+            type = "P" if round.round_type == "T" else "T"
+            #to do: if round is complete, say something
+            if round.round_number == round.game.game_length - 1: last_round = True
+            elif round.game.completed == True:
+                pass
+                #to do: go to game page
+        else: type = "F"
+        
+        forms = select_forms(type, last_round)
+        out = {'round': round, 'type': type, 'last_round': last_round}
+        out.update(forms)
+        out.update(csrf(request))
+        
+        return render(request, 'round.html', out)
