@@ -13,7 +13,7 @@ class Game(models.Model):
     game_length = models.PositiveSmallIntegerField(validators=[MinValueValidator(3), MaxValueValidator(15)], default=6)
     email_address = models.EmailField()
     
-    game_code = models.CharField(max_length=6, default=gen_code(n=6))
+    game_code = models.CharField(max_length=6, default=gen_code(n=6), unique=True)
     completed = models.BooleanField(default=False)
     
     inserted_date = models.DateTimeField(auto_now_add=True)
@@ -39,7 +39,7 @@ class Game(models.Model):
         
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.round_code = self.new_code()
+            self.game_code = self.new_code()
         super(Game, self).save(*args, **kwargs)
     
     def __str__(self):
