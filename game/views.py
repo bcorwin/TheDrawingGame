@@ -1,5 +1,6 @@
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render_to_response
 from django.template.context_processors import csrf
 
 from game.do import get_round, get_game, select_forms, gen_round_response, get_rounds
@@ -32,6 +33,11 @@ def show_round(request, code):
         return(render(request, 'round.html', out))
         
 def view_game(request, code):
+    if request.method == 'POST':
+        code = request.POST["game_code"]
+    print(code)
+    print(request.method)
+    print("HERE")
     game = get_game(code)
     if game is not None:
         if game.completed == True:
@@ -40,3 +46,7 @@ def view_game(request, code):
         else: return(HttpResponse("This game is not over yet."))
     else:
         return(HttpResponse("This game does not exist"))
+
+def home(request):
+    out = csrf(request)
+    return(render_to_response('home.html', out))
