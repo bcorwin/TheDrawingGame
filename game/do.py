@@ -8,7 +8,10 @@ def get_round(round):
     return(out)
     
 def get_game(game):
-    g = Game.objects.filter(pk=game) if type(game) == "int" else Game.objects.filter(game_code=game)
+    try: game = int(game)
+    except: pass
+    
+    g = Game.objects.filter(pk=game) if type(game) == type(int(1)) else Game.objects.filter(game_code=game)
     out = g.get() if g.exists() else None
     return(out)
     
@@ -77,4 +80,3 @@ def gen_round_response(post_data):
         else: out = str(form2.errors)
     else: out = messages["unknowntype"]
     return(out)
-    

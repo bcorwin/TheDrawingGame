@@ -15,7 +15,8 @@ def show_round(request, code):
         if code not in ['', None]:
             round = get_round(code)
             type = "P" if round.round_type == "T" else "T"
-            if round.completed == True & round.game.completed == False:
+            
+            if round.completed == True and round.game.completed == False:
                 return(HttpResponse("This round has been completed. However the game is not over yet."))
             elif round.game.completed == True:
                 return(HttpResponseRedirect("/game/view/" + round.game.game_code))

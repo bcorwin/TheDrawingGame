@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
+from django.conf import settings
+from game.email import send_email
 from random import choice
 from string import ascii_letters
 
@@ -24,6 +26,16 @@ class Game(models.Model):
             out = gen_code()
             chk = out in [g.game_code for g in Game.objects.all()]
         return(out)
+        
+    def get_all_emails(self):
+        return([r.email_address for r in Round.objects.filter(game=self)])
+        
+    def send_round_over_email(self):
+        subject = "Your Drawing Game is over!"
+        text_content = ""
+        html_content = "To view the completed game, click <a href='" + settings.BASE_URL + "/game/view/" + self.game_code + "'>here</a>."
+        
+        send_email(self.get_all_emails(), subject=subject, text_content=text_content, html_content=html_content)
         
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -79,6 +91,13 @@ class Round(models.Model):
             chk = out in [r.round_code for r in Round.objects.all()]
         return(out)
     
+    def send_new_round_email(self):
+        subject = self.display_name + " has send you a Drawing Game round!"
+        text_content = ""
+        html_content = "To play your round, click <a href='" + settings.BASE_URL + "/game/" + self.round_code + "'>here</a>."
+        
+        send_email([self.email_address], subject=subject, text_content=text_content, html_content=html_content)
+    
     def save(self, *args, **kwargs):
         if not self.pk:
             r_list = Round.objects.filter(game=self.game).order_by('-round_number')
@@ -94,15 +113,18 @@ class Round(models.Model):
             
             #The below should only run if the above save is completed successfully
             
-            #If game is complete, mark it as so
+            ##If game is complete, mark it as so
             g = self.game 
             if self.round_number >= g.game_length:
                 g.completed = True
                 g.save()
                 self.completed = True
                 self.save()
+                g.send_round_over_email()
+            else: self.send_new_round_email()
+                
             
-            #Set previous round to completed
+            ##Set previous round to completed
             prev = Round.objects.filter(game=self.game).order_by('-round_number')
             if len(prev) > 1:
                 last_round = prev[1]

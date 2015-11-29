@@ -20,12 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'td9-$t0-jigb2-qlos9gaq!sfbmjuxml&bgc&c@0x93*jiu+9g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = []
-
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -82,3 +82,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#Postmark email
+EMAIL_BACKEND = 'postmark.django_backend.EmailBackend'
+POSTMARK_TEST_MODE   = False
+POSTMARK_TRACK_OPENS = False
+
+try:
+    POSTMARK_API_KEY = os.environ["POSTMARK_API_KEY"]
+    POSTMARK_SENDER = os.environ["POSTMARK_SENDER"]
+    BASE_URL = os.environ["BASE_URL"]
+except:
+    pass
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
