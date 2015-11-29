@@ -20,6 +20,11 @@ class Game(models.Model):
     inserted_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     
+    def get_prev_round(self):
+        rounds = Round.objects.filter(game=self).order_by('-round_number').exclude(update_status=-1)
+        if rounds.exists(): return(rounds[0])
+        else: return(None)
+    
     def new_code(self):
         out = self.game_code
         chk = out in [g.game_code for g in Game.objects.all()]
@@ -100,6 +105,18 @@ class Round(models.Model):
             chk = out in [r.round_code for r in Round.objects.all()]
         return(out)
         
+    def reset_round(self, new_email):
+        if self.update_status == 2:
+            new_r = self
+            
+            self.set_status(-1)
+            self.save()
+            
+            new_r.pk = None
+            new_r.email_address = new_email
+            new_r.set_status(0)
+            new_r.save()
+        
     def wait_longer(self):
         if self.update_status == 2: self.send_reminder()
         return(None)
@@ -123,11 +140,11 @@ class Round(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.pk:
-            r_list = Round.objects.filter(game=self.game).order_by('-round_number')
-            if r_list.exists():
-                r = r_list[0]
-                self.round_number = r.round_number + 1
-                if self.round_number > r.game.game_length: raise ValidationError("Game has been completed. Cannot add another round.")
+            g = self.game
+            prev_round = g.get_prev_round()
+            if prev_round != None:
+                self.round_number = prev_round.round_number + 1
+                if self.round_number > prev_round.game.game_length: raise ValidationError("Game has been completed. Cannot add another round.")
             else: self.round_number = 1
             self.round_code = self.new_code()
             self.check_email()
@@ -137,7 +154,6 @@ class Round(models.Model):
             #The below should only run if the above save is completed successfully
             
             ##If game is complete, mark it as so
-            g = self.game 
             if self.round_number >= g.game_length:
                 g.completed = True
                 g.save()
@@ -146,13 +162,10 @@ class Round(models.Model):
                 g.send_round_over_email()
             else: self.send_new_round_email()
                 
-            
             ##Set previous round to completed
-            prev = Round.objects.filter(game=self.game).order_by('-round_number')
-            if len(prev) > 1:
-                last_round = prev[1]
-                last_round.completed = True
-                last_round.save()
+            if prev_round != None:
+                prev_round.completed = True
+                prev_round.save()
         else:
             super(Round, self).save(*args, **kwargs)
     
