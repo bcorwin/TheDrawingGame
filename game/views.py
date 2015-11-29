@@ -33,11 +33,7 @@ def show_round(request, code):
         return(render(request, 'round.html', out))
         
 def view_game(request, code):
-    if request.method == 'POST':
-        code = request.POST["game_code"]
-    print(code)
-    print(request.method)
-    print("HERE")
+    if request.method == 'POST': code = request.POST["game_code"]
     game = get_game(code)
     if game is not None:
         if game.completed == True:
