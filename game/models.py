@@ -99,6 +99,20 @@ class Round(models.Model):
             out = gen_code()
             chk = out in [r.round_code for r in Round.objects.all()]
         return(out)
+        
+    def wait_longer(self):
+        if self.update_status == 2: self.send_reminder()
+        return(None)
+    
+    def send_reminder_email(self):
+        self.set_status(1)
+        self.save()
+        
+        subject = "Don't forget to play The Drawing Game round that " + self.display_name + " sent you!"
+        text_content = ""
+        html_content = "To play your round, click <a href='" + settings.BASE_URL + "/game/" + self.round_code + "'>here</a>."
+        
+        send_email([self.email_address], subject=subject, text_content=text_content, html_content=html_content)
     
     def send_new_round_email(self):
         subject = self.display_name + " has send you a Drawing Game round!"
