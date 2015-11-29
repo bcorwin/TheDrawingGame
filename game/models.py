@@ -33,7 +33,7 @@ class Game(models.Model):
     def send_round_over_email(self):
         subject = "Your Drawing Game is over!"
         text_content = ""
-        html_content = "To view the completed game, click <a href='" + settings.BASE_URL + "/game/view/" + self.game_code + "'>here</a>."
+        html_content = "To view the completed game, click <a href='" + settings.BASE_URL + "/view/" + self.game_code + "'>here</a>."
         
         send_email(self.get_all_emails(), subject=subject, text_content=text_content, html_content=html_content)
         
