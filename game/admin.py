@@ -3,7 +3,7 @@ from game.models import Game, Round
 
 class roundInline(admin.TabularInline):
     model = Round
-    fields = ['round_number', 'round_code', 'email_address', 'display_name', 'view_submission', 'completed']
+    fields = ['round_number', 'round_code', 'email_address', 'display_name', 'view_submission', 'update_status', 'completed']
     readonly_fields = fields
     show_change_link = False
     extra = 0
@@ -14,9 +14,9 @@ class gameAdmin(admin.ModelAdmin):
     inlines = [roundInline]
     
 class roundAdmin(admin.ModelAdmin):
-    list_display = ['round_code', 'round_number', 'display_name', 'email_address', 'completed']
-    list_filter = ['display_name', 'round_number', 'email_address', 'completed']
-    fields = ['game', 'round_number', 'round_code', 'round_type', 'display_name', 'email_address', 'view_submission']
+    list_display = ['round_code', 'round_number', 'display_name', 'email_address', 'update_status', 'update_status_date', 'completed']
+    list_filter = ['display_name', 'round_number', 'email_address', 'update_status', 'update_status_date', 'completed']
+    fields = ['game', 'round_number', 'round_code', 'round_type', 'display_name', 'email_address', 'update_status', 'update_status_date', 'completed', 'view_submission']
     readonly_fields = ['view_submission']
     
 admin.site.register(Game, gameAdmin)

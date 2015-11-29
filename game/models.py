@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.conf import settings
+from django.utils import timezone
 from game.email import send_email
 from random import choice
 from string import ascii_letters
@@ -56,10 +57,18 @@ class Round(models.Model):
     submission = models.TextField()
     display_name = models.CharField(max_length=32)
     
+    update_status = models.SmallIntegerField(default=0, choices=((-1,"Reset"),(0,"None"),(1,"Reminder sent"),(2,"Request sent"),(3,"Expired")))
+    update_status_date = models.DateTimeField(default=timezone.now())
+    
     completed = models.BooleanField(default=False)
     
     inserted_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    
+    def set_status(self, status):
+        self.update_status = status
+        self.update_status_date = timezone.now()
+        self.save()
     
     def view_submission(self):
         if self.round_type == "P":
