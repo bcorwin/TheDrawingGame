@@ -1,0 +1,1 @@
+web: gunicorn TheDrawingGame.wsgi --log-file -
