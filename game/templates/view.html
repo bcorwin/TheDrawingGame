@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+	<body>
+    {% for round in rounds %}
+        {% if round.round_type == "T" %}
+            <h3>{{ round.submission }}</h3><hr><br>
+        {% elif round.round_type == "P" %}
+            <img  src="data:image/png;base64,{{ round.submission }}" ><hr><br>
+        {% endif %}
+    {% endfor %}
+	</body>
+</html>

@@ -8,9 +8,13 @@ def get_round(round):
     return(out)
     
 def get_game(game):
-    g = Game.objects.filter(pk=game)
+    g = Game.objects.filter(pk=game) if type(game) == "int" else Game.objects.filter(game_code=game)
     out = g.get() if g.exists() else None
     return(out)
+    
+def get_rounds(game):
+    r = Round.objects.filter(game=game).order_by("round_number")
+    return(r)
     
 def select_forms(round_type, last_round=False):
     out = {"form1": None, "form2": None, "form3": None}
