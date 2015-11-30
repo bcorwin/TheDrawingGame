@@ -74,6 +74,12 @@ class Round(models.Model):
         self.update_status = status
         self.update_status_date = timezone.now()
         self.save()
+        
+    def view_round(self):
+        link = settings.BASE_URL + "/game/" + self.round_code
+        link = "<a href='" + link + "'>" + self.round_code+ "</a>"
+        return(link)
+    view_round.allow_tags = True
     
     def view_submission(self):
         if self.round_type == "P":
