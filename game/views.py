@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 from django.template.context_processors import csrf
 
 from game.do import get_round, get_game, select_forms, gen_round_response, get_rounds
+from game.forms import reset_round_form
     
 def show_round(request, code):
     round = None
@@ -42,6 +43,40 @@ def view_game(request, code):
         else: return(HttpResponse("This game is not over yet."))
     else:
         return(HttpResponse("This game does not exist"))
+        
+def wait_round(request, code):
+    r = get_round(code)
+    if r is not None:
+        if r.completed == True:
+            return(HttpResponse("This round has been completed."))
+        elif r.update_status == 2:
+            r.wait_longer()
+            return(HttpResponse("Another reminder email has been sent to " + r.email_address + " and given 24 more hours to complete the round."))
+        else: return(HttpResponse("Unable to complete wait request."))
+    else:
+        return(HttpResponse("This round does not exist"))
+        
+def reset_round(request, code):
+    if request.method == "POST":
+        form = reset_round_form(request.POST)
+        if form.is_valid():
+            r = get_round(request.POST["round"])
+            new_email = form.cleaned_data["new_email"]
+            r.reset_round(new_email)
+            return(HttpResponse("Round has been reset! A request to play has been sent to " + new_email + "."))
+        else: return(HttpResponse("Email was invalid, try again."))
+        
+    else:
+        r = get_round(code)
+        if r is not None:
+            if r.completed == True:
+                return(HttpResponse("This round has been completed."))
+            elif r.update_status == 2:
+                form = reset_round_form()
+                return(render(request, 'reset.html', {"form":form, "round":r.round_code}))
+            else: return(HttpResponse("Unable to complete reset request."))
+        else:
+            return(HttpResponse("This round does not exist"))
 
 def home(request):
     out = csrf(request)

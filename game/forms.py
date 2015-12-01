@@ -34,3 +34,6 @@ class make_last_picture(forms.ModelForm):
     class Meta:
         model = Round
         fields = ["display_name"]
+        
+class reset_round_form(forms.Form):
+    new_email = forms.EmailField()

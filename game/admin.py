@@ -5,7 +5,7 @@ class roundInline(admin.TabularInline):
     model = Round
     fields = ['round_number', 'view_round', 'email_address', 'display_name', 'view_submission', 'update_status', 'completed']
     readonly_fields = fields
-    show_change_link = False
+    show_change_link = True
     extra = 0
 
 class gameAdmin(admin.ModelAdmin):

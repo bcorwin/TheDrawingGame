@@ -62,7 +62,7 @@ class Round(models.Model):
     submission = models.TextField()
     display_name = models.CharField(max_length=32)
     
-    update_status = models.SmallIntegerField(default=0, choices=((-1,"Reset"),(0,"None"),(1,"Reminder sent"),(2,"Request sent"),(3,"Expired")))
+    update_status = models.SmallIntegerField(default=0, choices=((-2,"Expired"), (-1,"Reset"),(0,"None"),(1,"Reminder sent"),(2,"Request sent")))
     update_status_date = models.DateTimeField(default=timezone.now())
     
     completed = models.BooleanField(default=False)
@@ -112,7 +112,9 @@ class Round(models.Model):
         return(out)
         
     def reset_round(self, new_email):
-        if self.update_status == 2:
+        if self.completed == True:
+            raise ValidationError("Original user has already completed the round.")
+        elif self.update_status == 2:
             new_r = self
             
             self.set_status(-1)
@@ -124,12 +126,20 @@ class Round(models.Model):
             new_r.save()
         
     def wait_longer(self):
-        if self.update_status == 2: self.send_reminder()
-        return(None)
+        if self.update_status == 2: self.send_reminder_email()
+        
+    def send_request(self):
+        self.set_status(2)
+    
+        subject = self.display_name + " has not completed their round."
+        text_content = ""
+        html_content = "To give " + self.display_name + " 24 more hours to complete the round, click <a href='" + settings.BASE_URL + "/wait/" + self.round_code + "'>here</a>.<br>"
+        html_content += "To send this round to someone new, click <a href='" + settings.BASE_URL + "/reset/" + self.round_code + "'>here</a>."
+        
+        send_email([self.game.email_address], subject=subject, text_content=text_content, html_content=html_content)
     
     def send_reminder_email(self):
         self.set_status(1)
-        self.save()
         
         subject = "Don't forget to play The Drawing Game round that " + self.display_name + " sent you!"
         text_content = ""
