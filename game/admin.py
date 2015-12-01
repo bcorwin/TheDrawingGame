@@ -19,7 +19,7 @@ class roundAdmin(admin.ModelAdmin):
     list_display = ['round_code', 'round_number', 'display_name', 'email_address', 'update_status', 'update_status_date', 'completed']
     list_filter = ['display_name', 'round_number', 'email_address', 'update_status', 'update_status_date', 'completed']
     fields = ['game', 'round_number', 'view_round', 'round_type', 'display_name', 'email_address', 'update_status', 'update_status_date', 'completed', 'view_submission']
-    readonly_fields = ['view_round', 'view_submission']
+    readonly_fields = ['view_round', 'view_submission', 'update_status_date']
     
 admin.site.register(Game, gameAdmin)
 admin.site.register(Round, roundAdmin)
