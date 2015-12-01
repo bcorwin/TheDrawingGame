@@ -69,7 +69,7 @@ class Round(models.Model):
     display_name = models.CharField(max_length=32)
     
     update_status = models.SmallIntegerField(default=0, choices=((-2,"Expired"), (-1,"Reset"),(0,"None"),(1,"Reminder sent"),(2,"Request sent")))
-    update_status_date = models.DateTimeField(default=timezone.now())
+    update_status_date = models.DateTimeField(auto_now_add=True)
     
     completed = models.BooleanField(default=False)
     

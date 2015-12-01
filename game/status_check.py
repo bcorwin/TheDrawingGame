@@ -21,3 +21,4 @@ def status_check():
             r.game.completed = True
             r.game.save()
             r.game.send_round_over_email()
+    return(None)
