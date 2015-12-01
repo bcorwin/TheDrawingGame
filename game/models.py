@@ -14,7 +14,7 @@ class Game(models.Model):
     game_length = models.PositiveSmallIntegerField(validators=[MinValueValidator(3), MaxValueValidator(15)], default=6)
     email_address = models.EmailField()
     
-    game_code = models.CharField(max_length=6, default=gen_code(n=6), unique=True)
+    game_code = models.CharField(max_length=6, default=gen_code, unique=True)
     completed = models.BooleanField(default=False)
     
     inserted_date = models.DateTimeField(auto_now_add=True)
@@ -61,7 +61,7 @@ class Round(models.Model):
     game = models.ForeignKey(Game, on_delete=models.PROTECT)
     
     round_number = models.PositiveSmallIntegerField()
-    round_code = models.CharField(max_length=6, default=gen_code(n=6), unique=True)
+    round_code = models.CharField(max_length=6, default=gen_code, unique=True)
     round_type = models.CharField(max_length=1, choices=(("T", "Text round"), ("P", "Picture round")))
     
     email_address = models.EmailField()
