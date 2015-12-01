@@ -20,6 +20,12 @@ class Game(models.Model):
     inserted_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     
+    def view_game(self):
+        link = settings.BASE_URL + "/view/" + self.game_code
+        link = "<a href='" + link + "'>" + self.game_code + "</a>"
+        return(link)
+    view_game.allow_tags = True
+    
     def get_prev_round(self):
         rounds = Round.objects.filter(game=self).order_by('-round_number').exclude(update_status=-1)
         if rounds.exists(): return(rounds[0])

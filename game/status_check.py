@@ -15,7 +15,9 @@ def status_check():
             r.send_request()
         elif r.update_status == 2 and hours_ago >= 24:
             #Set status to -2 (expired) and send final game out
+            r.completed = True
             r.set_status(-2)
+            
             r.game.completed = True
             r.game.save()
             r.game.send_round_over_email()
