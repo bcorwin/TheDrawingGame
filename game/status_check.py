@@ -5,7 +5,7 @@ def status_check():
     rounds = Round.objects.filter(completed=False, update_status__gte=0)
     
     for r in rounds:
-        hours_ago = (timezone.now() - r.update_status_change).total_seconds()/3600
+        hours_ago = (timezone.now() - r.update_status_date).total_seconds()/3600
 
         if r.update_status == 0 and hours_ago >= 24:
             #Send reminder and set status to 1 (reminder sent)
