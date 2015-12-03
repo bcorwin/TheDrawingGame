@@ -23,7 +23,7 @@ def show_round(request, code):
             elif round.completed == True and round.game.completed == False:
                 return(HttpResponse("This round has been completed. However the game is not over yet."))
             elif (round.completed == True and round.game.completed == True) or round.update_status == -3:
-                return(HttpResponseRedirect("/game/view/" + round.game.game_code))
+                return(HttpResponseRedirect("/view/" + round.game.game_code))
             
             if round.round_number == round.game.game_length - 1:
                 last_round = True
