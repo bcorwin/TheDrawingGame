@@ -15,6 +15,13 @@
 		<script type="text/javascript" src="{% static 'Drawingboard/js/controls/navigation.js' %}"></script>
 		<script type="text/javascript" src="{% static 'Drawingboard/js/controls/size.js' %}"></script>
 		<script type="text/javascript" src="{% static 'Drawingboard/js/controls/download.js' %}"></script>
+		
+		<style>
+			#id_form2-submission {
+				width: 500px;
+				height: 50px;
+			}
+	</style>
 	</head>
 	<body>
         
@@ -26,7 +33,9 @@
                 <input type="hidden" name="type" value="{{type}}">
             <br><input type="submit" value="Submit" >
         {% elif type == "P" %}
-            {{ round.submission}}
+            <h3>{{ round.submission}}</h3>
+			<hr>
+			<h5>Draw the above sentence:</h5>
             <div id="canvasDiv"></div>
             
             <style>
