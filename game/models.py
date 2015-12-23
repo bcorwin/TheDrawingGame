@@ -49,8 +49,8 @@ class Game(models.Model):
     def get_all_emails(self):
         return([r.email_address for r in Round.objects.filter(game=self)])
         
-    def send_round_over_email(self):
-        subject = "Your Drawing Game is over!"
+    def send_round_over_email(self, expired=False):
+        subject = "Your Drawing Game is over!" if expired == False else "Your Drawing Game has expired."
         text_content = ""
         html_content = "To view the completed game, click <a href='" + settings.BASE_URL + "/view/" + self.game_code + "'>here</a>."
         
