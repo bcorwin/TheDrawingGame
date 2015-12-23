@@ -16,6 +16,8 @@ def show_round(request, code):
     else:
         if code not in ['', None]:
             round = get_round(code)
+            if round == None: return(HttpResponse("The round " + code + " does not exist."))
+            
             type = "P" if round.round_type == "T" else "T"
             
             if round.update_status == -2:
