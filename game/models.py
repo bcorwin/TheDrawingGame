@@ -26,6 +26,13 @@ class Game(models.Model):
         return(link)
     view_game.allow_tags = True
     
+    def get_last_email(self):
+        rounds = Round.objects.filter(game=self).order_by('-round_number').exclude(update_status=-1)
+        if rounds.exists():
+            if len(rounds) == 1: return(self.email_address)
+            else: return(rounds[1].email_address)
+        else: return(None)
+    
     def get_prev_round(self):
         rounds = Round.objects.filter(game=self).order_by('-round_number').exclude(update_status=-1)
         if rounds.exists(): return(rounds[0])
@@ -137,12 +144,12 @@ class Round(models.Model):
     def send_request(self):
         self.set_status(2)
     
-        subject = self.display_name + " has not completed their round."
+        subject = self.email_address + " has not completed their round."
         text_content = ""
-        html_content = "To give " + self.display_name + " 24 more hours to complete the round, click <a href='" + settings.BASE_URL + "/wait/" + self.round_code + "'>here</a>.<br>"
+        html_content = "To give " + self.email_address + " 24 more hours to complete the round, click <a href='" + settings.BASE_URL + "/wait/" + self.round_code + "'>here</a>.<br>"
         html_content += "To send this round to someone new, click <a href='" + settings.BASE_URL + "/reset/" + self.round_code + "'>here</a>."
         
-        send_email([self.game.email_address], subject=subject, text_content=text_content, html_content=html_content)
+        send_email([self.game.get_last_email()], subject=subject, text_content=text_content, html_content=html_content)
     
     def send_reminder_email(self):
         self.set_status(1)
@@ -151,9 +158,7 @@ class Round(models.Model):
         text_content = ""
         html_content = "To play your round, click <a href='" + settings.BASE_URL + "/game/" + self.round_code + "'>here</a>."
         
-        prev_round = self.game.get_prev_round()
-        
-        send_email([prev_round.email_address], subject=subject, text_content=text_content, html_content=html_content)
+        send_email([self.email_address], subject=subject, text_content=text_content, html_content=html_content)
     
     def send_new_round_email(self):
         subject = self.display_name + " has send you a Drawing Game round!"
