@@ -1,5 +1,22 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from game.models import Game, Round
+
+def send_request(modeladmin, request, queryset):
+    if len(queryset) == 0: messages.error(request, "No rounds selected.")
+    for round in queryset:
+        if (round.update_status >= 1 and round.completed == False):
+            round.send_request()
+            messages.info(request, "Request sent for round " + round.round_code)
+        else: messages.warning(request, "Request not sent for round " + round.round_code )
+    
+
+def send_reminder(modeladmin, request, queryset):
+    if len(queryset) == 0: messages.error(request, "No rounds selected.")
+    for round in queryset:
+        if (round.update_status >= 0 and round.completed == False):
+            round.send_reminder_email()
+            messages.info(request, "Email sent to " + round.email_address)
+        else: messages.warning(request, "Email not sent to " + round.email_address)
 
 class roundInline(admin.TabularInline):
     model = Round
@@ -20,6 +37,7 @@ class roundAdmin(admin.ModelAdmin):
     list_filter = ['display_name', 'round_number', 'email_address', 'update_status', 'update_status_date', 'completed']
     fields = ['game', 'round_number', 'view_round', 'round_type', 'display_name', 'email_address', 'update_status', 'update_status_date', 'completed', 'view_submission']
     readonly_fields = ['view_round', 'view_submission', 'update_status_date']
+    actions = [send_reminder, send_request]
     
 admin.site.register(Game, gameAdmin)
 admin.site.register(Round, roundAdmin)
