@@ -4,7 +4,8 @@
         <form action="/reset/" method="post">
             {% csrf_token %}
             {{ form.as_p }}    
-            <input type="hidden" name="round" id="round" value="{{round}}">
+            <input type="hidden" name="round" id="round" value="{{round.round_code}}">
+            <span title="Current players (cannot reuse):&#10;{{ round.game.get_all_emails | join:'&#10;' }}"><i>Hover over to view current players.</i></span><br>
         <br><input type="submit" value="Submit" >
 	</body>
 </html>

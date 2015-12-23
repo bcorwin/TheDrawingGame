@@ -67,9 +67,10 @@ def reset_round(request, code):
         if form.is_valid():
             r = get_round(request.POST["round"])
             new_email = form.cleaned_data["new_email"]
-            r.reset_round(new_email)
-            return(HttpResponse("Round has been reset! A request to play has been sent to " + new_email + "."))
-        else: return(HttpResponse("Email was invalid, try again."))
+            chk = r.reset_round(new_email)
+            if chk == None: return(HttpResponse("Round has been reset! A request to play has been sent to " + new_email + "."))
+            else: return(HttpResponse(chk))
+        else: return(HttpResponse("Unknown error. Go back and try again."))
         
     else:
         r = get_round(code)
@@ -78,7 +79,7 @@ def reset_round(request, code):
                 return(HttpResponse("This round has been completed."))
             elif r.update_status == 2:
                 form = reset_round_form()
-                return(render(request, 'reset.html', {"form":form, "round":r.round_code}))
+                return(render(request, 'reset.html', {"form":form, "round":r}))
             else: return(HttpResponse("Unable to complete reset request."))
         else:
             return(HttpResponse("This round does not exist"))

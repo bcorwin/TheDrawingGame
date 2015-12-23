@@ -113,7 +113,7 @@ class Round(models.Model):
     def check_email(self):
         emails = [e.upper() for e in self.game.get_all_emails()]
         if self.email_address.upper() in emails:
-            raise ValidationError(('').join(["The email address, ", self.email_address, ", has already been used this game. <a href='javascript:history.back()'>Go back</a> to try again."]))
+            raise ValidationError((', ').join(["The email address", self.email_address, "has already been used this game. <a href='javascript:history.back()'>Go back</a> to try again."]))
     
     def new_code(self):
         out = self.round_code
@@ -124,8 +124,9 @@ class Round(models.Model):
         return(out)
         
     def reset_round(self, new_email):
+        out = None
         if self.completed == True:
-            raise ValidationError("Original user has already completed the round.")
+            out = "Original user has already completed the round."
         elif self.update_status == 2:
             new_r = self
             
@@ -135,7 +136,8 @@ class Round(models.Model):
             new_r.pk = None
             new_r.email_address = new_email
             new_r.set_status(0)
-            new_r.save()
+            out = new_r.save()
+        return(out)
         
     def wait_longer(self):
         if self.update_status == 2: self.send_reminder_email()
