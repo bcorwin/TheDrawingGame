@@ -161,7 +161,7 @@ class Round(models.Model):
         send_email([self.email_address], subject=subject, text_content=text_content, html_content=html_content)
     
     def send_new_round_email(self):
-        subject = self.display_name + " has send you a Drawing Game round!"
+        subject = self.display_name + " has sent you a Drawing Game round!"
         text_content = ""
         html_content = "To play your round, click <a href='" + settings.BASE_URL + "/game/" + self.round_code + "'>here</a>."
         

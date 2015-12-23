@@ -43,7 +43,7 @@ TEMPLATES = [
 SECRET_KEY = 'td9-$t0-jigb2-qlos9gaq!sfbmjuxml&bgc&c@0x93*jiu+9g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = False
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
