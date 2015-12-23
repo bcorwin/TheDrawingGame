@@ -36,7 +36,7 @@ def gen_round_response(post_data):
     except: last_round = None
     try: round_type = post_data['type']
     except: round_type = None
-    
+    r = None
     messages = {"success": "Thanks for playing!", "unknowntype": "Unknown round_type."}
     
     if round_type == "F":
@@ -79,4 +79,8 @@ def gen_round_response(post_data):
             out = messages["success"]
         else: out = str(form2.errors)
     else: out = messages["unknowntype"]
+    
+    if last_round == True and r != None:
+        out += " Click <a href='/view/" + r.game.game_code + "'>here</a> to view the game."
+    
     return(out)
