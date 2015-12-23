@@ -35,7 +35,7 @@
         {% elif type == "P" %}
             <h3>{{ round.submission}}</h3>
 			<hr>
-			<h5>Draw the above sentence:</h5>
+			<h3>Draw the above sentence:</h3>
             <div id="canvasDiv"></div>
             
             <style>
@@ -84,5 +84,6 @@
                 <span title="Current players (cannot reuse):&#10;{{ round.game.get_all_emails | join:'&#10;' }}"><i>Hover over to view current players.</i></span><br>
             <br><input type="submit" value="Submit" >
         {% endif %}
+        <br><br><a href='/howtoplay/' target="_blank">How to play</a>
 	</body>
 </html>
