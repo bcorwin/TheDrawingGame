@@ -113,7 +113,7 @@ class Round(models.Model):
     def check_email(self):
         emails = [e.upper() for e in self.game.get_all_emails()]
         if self.email_address.upper() in emails:
-            raise ValidationError(('').join(["The email address, ", self.email_address, ", has already been used this game."]))
+            raise ValidationError(('').join(["The email address, ", self.email_address, ", has already been used this game. <a href='javascript:history.back()'>Go back</a> to try again."]))
     
     def new_code(self):
         out = self.round_code
@@ -175,7 +175,9 @@ class Round(models.Model):
                 if self.round_number > prev_round.game.game_length: raise ValidationError("Game has been completed. Cannot add another round.")
             else: self.round_number = 1
             self.round_code = self.new_code()
-            self.check_email()
+            
+            try: self.check_email()
+            except ValidationError as e: return(e)
             
             super(Round, self).save(*args, **kwargs)
             
@@ -196,6 +198,7 @@ class Round(models.Model):
                 prev_round.save()
         else:
             super(Round, self).save(*args, **kwargs)
-    
+        return(None)
+
     def __str__(self):
         return(self.round_code)

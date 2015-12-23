@@ -49,8 +49,9 @@ def gen_round_response(post_data):
             r.round_type = "T"
             r.game = g
             
-            r.save()
-            out = messages["success"]
+            chk = r.save()
+            out = messages["success"] if chk == None else chk
+                
         else: out = str(form1.errors) + str(form2.errors)
     elif round_type == "T":
         form2 = forms.make_text_round(post_data, prefix="form2") if last_round == False else forms.make_last_text(post_data, prefix="form2")
@@ -61,8 +62,8 @@ def gen_round_response(post_data):
             r.round_type = "T"
             if last_round == True: r.email_address = r.game.email_address
             
-            r.save()
-            out = messages["success"]
+            chk = r.save()
+            out = messages["success"] if chk == None else chk
         else: out = str(form2.errors)   
     elif round_type == "P":
         form2 = forms.make_picture_round(post_data, prefix="form2") if last_round == False else forms.make_last_picture(post_data, prefix="form2")
@@ -75,8 +76,8 @@ def gen_round_response(post_data):
             r.submission = form3.cleaned_data["img"].replace("data:image/png;base64,", "")
             if last_round == True: r.email_address = r.game.email_address
             
-            r.save()
-            out = messages["success"]
+            chk = r.save()
+            out = messages["success"] if chk == None else chk
         else: out = str(form2.errors)
     else: out = messages["unknowntype"]
     
