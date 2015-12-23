@@ -47,7 +47,9 @@ class Game(models.Model):
         return(out)
         
     def get_all_emails(self):
-        return([r.email_address for r in Round.objects.filter(game=self)])
+        emails = [R.email_address for R in Round.objects.filter(game=self)]
+        if self.email_address not in emails: emails = [self.email_address] + emails
+        return(emails)
         
     def send_round_over_email(self, expired=False):
         subject = "Your Drawing Game is over!" if expired == False else "Your Drawing Game has expired."
@@ -109,10 +111,7 @@ class Round(models.Model):
     view_submission.allow_tags = True
         
     def check_email(self):
-        emails = Round.objects.filter(game=self.game)
-        emails = [r.email_address.upper() for r in emails]
-        if self.round_number != self.game.game_length: emails += [self.game.email_address.upper()]
-
+        emails = [e.upper() for e in self.game.get_all_emails()]
         if self.email_address.upper() in emails:
             raise ValidationError(('').join(["The email address, ", self.email_address, ", has already been used this game."]))
     

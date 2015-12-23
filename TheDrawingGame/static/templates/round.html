@@ -69,7 +69,8 @@
                 <input type="hidden" name="type" value="{{type}}">
                 <input type="hidden" name="round_type" value="{{type}}">
                 <input type="hidden" name="game" value="{{round.game.id}}">
-                <input type="submit" value="Submit" >
+                <span title="Current players (cannot reuse):&#10;{{ round.game.get_all_emails | join:'&#10;' }}"><i>Hover over to view current players.</i></span><br>
+                <br><input type="submit" value="Submit" >
             </form>
         {% elif type == "T" %}
             <img  src="data:image/png;base64,{{ round.submission }}" >
@@ -80,6 +81,7 @@
                 <input type="hidden" name="type" value="{{type}}">
                 <input type="hidden" name="round_type" value="{{type}}">
                 <input type="hidden" name="game" value="{{round.game.id}}">
+                <span title="Current players (cannot reuse):&#10;{{ round.game.get_all_emails | join:'&#10;' }}"><i>Hover over to view current players.</i></span><br>
             <br><input type="submit" value="Submit" >
         {% endif %}
 	</body>
