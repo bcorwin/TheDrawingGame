@@ -15,10 +15,6 @@ def get_game(game):
     out = g.get() if g.exists() else None
     return(out)
     
-def get_rounds(game):
-    r = Round.objects.filter(game=game).order_by("round_number")
-    return(r)
-    
 def select_forms(round_type, last_round=False):
     out = {"form1": None, "form2": None, "form3": None}
     if round_type == "F":
@@ -60,7 +56,7 @@ def gen_round_response(post_data):
             
             r.game = get_game(post_data['game'])
             r.round_type = "T"
-            if last_round == True: r.email_address = r.game.email_address
+            if last_round == True: r.email_address = ""
             
             chk = r.save()
             out = messages["success"] if chk == None else chk
@@ -80,8 +76,8 @@ def gen_round_response(post_data):
             out = messages["success"] if chk == None else chk
         else: out = str(form2.errors)
     else: out = messages["unknowntype"]
-    
-    if last_round == True and r != None:
+
+    if last_round == True and r != None and type(out) == type("str"):
         out += " Click <a href='/view/" + r.game.game_code + "'>here</a> to view the game."
     
     return(out)

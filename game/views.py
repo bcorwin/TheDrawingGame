@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template.context_processors import csrf
 
-from game.do import get_round, get_game, select_forms, gen_round_response, get_rounds
+from game.do import get_round, get_game, select_forms, gen_round_response
 from game.forms import reset_round_form
     
 def show_round(request, code):
@@ -43,7 +43,7 @@ def view_game(request, code):
     game = get_game(code)
     if game is not None:
         if game.completed == True:
-            rounds = get_rounds(game)
+            rounds = game.get_rounds()
             return render(request, 'view.html', {"rounds":rounds})
         else: return(HttpResponse("This game is not over yet."))
     else:

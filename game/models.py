@@ -20,6 +20,12 @@ class Game(models.Model):
     inserted_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     
+    def get_rounds(self, all = False):
+        rounds = Round.objects.filter(game=self).order_by('-round_number')
+        if all == False: rounds = rounds.exclude(update_status=-1)
+        
+        return(rounds)
+    
     def view_game(self):
         link = settings.BASE_URL + "/view/" + self.game_code
         link = "<a href='" + link + "'>" + self.game_code + "</a>"
@@ -27,14 +33,14 @@ class Game(models.Model):
     view_game.allow_tags = True
     
     def get_last_email(self):
-        rounds = Round.objects.filter(game=self).order_by('-round_number').exclude(update_status=-1)
+        rounds = self.get_rounds()
         if rounds.exists():
             if len(rounds) == 1: return(self.email_address)
             else: return(rounds[1].email_address)
         else: return(None)
     
     def get_prev_round(self):
-        rounds = Round.objects.filter(game=self).order_by('-round_number').exclude(update_status=-1)
+        rounds = self.get_rounds()
         if rounds.exists(): return(rounds[0])
         else: return(None)
     
@@ -47,7 +53,7 @@ class Game(models.Model):
         return(out)
         
     def get_all_emails(self):
-        emails = [R.email_address for R in Round.objects.filter(game=self)]
+        emails = [R.email_address for R in self.get_rounds(all = True)]
         if self.email_address not in emails: emails = [self.email_address] + emails
         return(emails)
         
@@ -99,8 +105,6 @@ class Round(models.Model):
     def view_submission(self):
         if self.round_type == "P":
             out = '<img  src="data:image/png;base64,' + self.submission + '" width="200">'
-            #out = "<a href='" + "www.google.com" + "'>View</a>"
-            #out = u"<a href='%s'>View</a>" % 'http://www.google.com'
         else:
             if len(self.submission) > 160:
                 out = self.submission[0:159]
@@ -146,7 +150,7 @@ class Round(models.Model):
         self.set_status(2)
     
         subject = self.email_address + " has not completed their round."
-        text_content = ""
+        text_content = ""           
         html_content = "To give " + self.email_address + " 24 more hours to complete the round, click <a href='" + settings.BASE_URL + "/wait/" + self.round_code + "'>here</a>.<br>"
         html_content += "To send this round to someone new, click <a href='" + settings.BASE_URL + "/reset/" + self.round_code + "'>here</a>."
         
