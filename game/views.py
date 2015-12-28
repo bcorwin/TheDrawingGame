@@ -43,7 +43,7 @@ def view_game(request, code):
     game = get_game(code)
     if game is not None:
         if game.completed == True:
-            rounds = game.get_rounds()
+            rounds = game.get_rounds(order="asc")
             return render(request, 'view.html', {"rounds":rounds})
         else: return(HttpResponse("This game is not over yet."))
     else:

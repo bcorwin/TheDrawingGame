@@ -20,8 +20,9 @@ class Game(models.Model):
     inserted_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     
-    def get_rounds(self, all = False):
-        rounds = Round.objects.filter(game=self).order_by('-round_number')
+    def get_rounds(self, all = False, order = "desc"):
+        rounds = Round.objects.filter(game=self)
+        rounds = rounds.order_by('-round_number') if order == "desc" else rounds.order_by('round_number')
         if all == False: rounds = rounds.exclude(update_status=-1)
         
         return(rounds)
