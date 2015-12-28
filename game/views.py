@@ -20,12 +20,12 @@ def show_round(request, code):
             
             type = "P" if round.round_type == "T" else "T"
             
-            if round.update_status == -2:
-                return(HttpResponse("This round code is no longer valid."))
-            elif round.completed == True and round.game.completed == False:
+            if round.completed == True and round.game.completed == False:
                 return(HttpResponse("This round has been completed. However the game is not over yet."))
             elif (round.completed == True and round.game.completed == True) or round.update_status == -1:
                 return(HttpResponseRedirect("/view/" + round.game.game_code))
+            elif round.update_status == -2:
+                return(HttpResponse("This round code is no longer valid."))
             
             if round.round_number == round.game.game_length - 1:
                 last_round = True
