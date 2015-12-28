@@ -92,6 +92,10 @@ class Round(models.Model):
     inserted_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     
+    def get_game_id(self):
+        return(self.game.pk)
+    get_game_id.short_description = 'Game ID'
+     
     def set_status(self, status):
         self.update_status = status
         self.update_status_date = timezone.now()
