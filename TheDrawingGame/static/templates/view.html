@@ -43,20 +43,8 @@ img {
 $('div.round').first();
 
 function scrollPage(t) {
-    
-    if (t === 'next' && $('.current').nextAll('div.round').length > 0) {
-        var $next = $('.current').nextAll('.round');
-        var top = $next.offset().top;
-        
-        $('.current').removeClass('current');
-      
-        $('body').animate({
-          scrollTop: top     
-        }, function () {
-               $next.addClass('current');
-        });
-  } else if (t === 'prev' && $('.current').prevAll('div.round').length > 0) {
-        var $prev = $('.current').prevAll('.round');
+    if (t === 'prev' && $('.current').prevAll('div.round').length > 0) {
+        var $prev = $('.current').prevAll('.round').first();
         var top = $prev.offset().top;
         
         $('.current').removeClass('current');
@@ -66,7 +54,22 @@ function scrollPage(t) {
         }, function () {
                $prev.addClass('current');
         });
-  } 
+    }
+    if($(window).scrollTop() + $(window).height() == $(document).height()) {
+        return;
+    }
+    if (t === 'next' && $('.current').nextAll('div.round').length > 0) {
+        var $next = $('.current').nextAll('.round').first();
+        var top = $next.offset().top;
+        
+        $('.current').removeClass('current');
+      
+        $('body').animate({
+          scrollTop: top     
+        }, function () {
+               $next.addClass('current');
+        });
+    }
 };
 </script>
 </head>
