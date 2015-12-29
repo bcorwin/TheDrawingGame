@@ -1,0 +1,76 @@
+<html>
+<head>
+<style>
+div.text {
+    background-color:lightgray;
+    color:black;
+    margin:20px;
+    padding:20px;
+}
+div.pic {
+    border: 1px solid #000;
+}
+.up-button {
+  position:fixed;
+  right:5%;
+  cursor:pointer;
+  top:5%; 
+} 
+.down-button {
+  position:fixed;
+  right:5%;
+  cursor:pointer;
+  bottom:5%; 
+} 
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+$('div.round').first();
+
+function scrollPage(t) {
+    if (t === 'next' && $('.current').next('div.round').length > 0) {
+        var $next = $('.current').next('.round');
+        var top = $next.offset().top;
+        
+        $('.current').removeClass('current');
+      
+        $('body').animate({
+          scrollTop: top     
+        }, function () {
+               $next.addClass('current');
+        });
+  } else if (t === 'prev' && $('.current').prev('div.round').length > 0) {
+        var $prev = $('.current').prev('.round');
+        var top = $prev.offset().top;
+        
+        $('.current').removeClass('current');
+      
+        $('body').animate({
+          scrollTop: top     
+        }, function () {
+               $prev.addClass('current');
+        });
+  } 
+};
+</script>
+</head>
+<body>
+<div class="up-button">
+    <img onclick="scrollPage('prev')" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/ArrowUp.svg/120px-ArrowUp.svg.png">
+</div><div class="down-button">
+    <img onclick="scrollPage('next')" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/ArrowDown.svg/120px-ArrowDown.svg.png">
+</div>
+<div class="round text current"><p>First sentence</p></div>
+<div class="round pic"><img src="http://www.contextfreeart.org/mediawiki/images/0/06/RandomAngle.png"></div>
+<div class="round text"><p>Second sentence</p></div>
+<div class="round pic"><img src="http://www.contextfreeart.org/mediawiki/images/0/06/RandomAngle.png"></div>
+<div class="round text"><p>Third sentence</p></div>
+<div class="round pic"><img src="http://www.contextfreeart.org/mediawiki/images/0/06/RandomAngle.png"></div>
+<div class="round text"><p>First sentence</p></div>
+<div class="round pic"><img src="http://www.contextfreeart.org/mediawiki/images/0/06/RandomAngle.png"></div>
+<div class="round text"><p>Second sentence</p></div>
+<div class="round pic"><img src="http://www.contextfreeart.org/mediawiki/images/0/06/RandomAngle.png"></div>
+<div class="round text"><p>Third sentence</p></div>
+<div class="round pic"><img src="http://www.contextfreeart.org/mediawiki/images/0/06/RandomAngle.png"></div>
+</body>
+</html>

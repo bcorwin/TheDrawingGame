@@ -70,7 +70,7 @@ def gen_round_response(post_data):
             r.game = get_game(post_data['game'])
             r.round_type = "P"
             r.submission = form3.cleaned_data["img"].replace("data:image/png;base64,", "")
-            if last_round == True: r.email_address = r.game.email_address
+            if last_round == True: r.email_address = ""
             
             chk = r.save()
             out = messages["success"] if chk == None else chk

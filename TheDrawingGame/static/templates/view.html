@@ -1,15 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-	<body>
+<head>
+<style>
+div.game {
+    width: 90%;
+    max-width:1300px;
+}
+div.navigation {
+    position:fixed;
+    right: 0px;
+    width: 10%;
+    height: 100%;
+}
+div.text, div.pic {
+    background-color:lightgray;
+    color:black;
+    margin:20px;
+    padding:20px;
+    max-width:1200px
+    width: 100%;
+}
+img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.up-button {
+    left:5%;
+    cursor:pointer;
+    top:5%; 
+} 
+.down-button {
+    left:5%;
+    cursor:pointer;
+    bottom:5%;
+} 
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+$('div.round').first();
+
+function scrollPage(t) {
+    
+    if (t === 'next' && $('.current').nextAll('div.round').length > 0) {
+        var $next = $('.current').nextAll('.round');
+        var top = $next.offset().top;
+        
+        $('.current').removeClass('current');
+      
+        $('body').animate({
+          scrollTop: top     
+        }, function () {
+               $next.addClass('current');
+        });
+  } else if (t === 'prev' && $('.current').prevAll('div.round').length > 0) {
+        var $prev = $('.current').prevAll('.round');
+        var top = $prev.offset().top;
+        
+        $('.current').removeClass('current');
+      
+        $('body').animate({
+          scrollTop: top     
+        }, function () {
+               $prev.addClass('current');
+        });
+  } 
+};
+</script>
+</head>
+<body>
+<!-- Do not hot link the images -->
+<div class = "navigation">
+    <div class="up-button"><img onclick="scrollPage('prev')" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/ArrowUp.svg/120px-ArrowUp.svg.png"></div><br>
+    <div class="down-button"><img onclick="scrollPage('next')" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/ArrowDown.svg/120px-ArrowDown.svg.png"></div>
+</div>
+<div class="game">
     {% for round in rounds %}
         {% if round.completed == True and round.update_status != -1 %}
-            <h3>{{ round.display_name }}:</h3>
+            <div class="round{% if forloop.first %} current{% endif %}"><h3>{{ round.display_name }}:</h3></div>
             {% if round.round_type == "T" %}
-                <h4>{{ round.submission }}</h4><hr><br>
+                <div class="text"><p>{{ round.submission }}</p></div>
             {% elif round.round_type == "P" %}
-                <img  src="data:image/png;base64,{{ round.submission }}" ><hr><br>
+                <div class="pic"><img src="data:image/png;base64,{{ round.submission }}"></div>
             {% endif %}
         {% endif %}
     {% endfor %}
-	</body>
+</div>
+</body>
 </html>
