@@ -108,14 +108,7 @@ class Round(models.Model):
     view_round.allow_tags = True
     
     def view_submission(self):
-        if self.round_type == "P":
-            out = '<img  src="data:image/png;base64,' + self.submission + '" width="200">'
-        else:
-            if len(self.submission) > 160:
-                out = self.submission[0:159]
-                out += "..."
-            else:
-                out = self.submission
+        out = '<img  src="data:image/png;base64,' + self.submission + '" width="500" border="1">' if self.round_type == "P" else self.submission
         return(out)
     view_submission.allow_tags = True
         
