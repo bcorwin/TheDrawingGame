@@ -20,7 +20,7 @@ def send_reminder(modeladmin, request, queryset):
 
 class roundInline(admin.TabularInline):
     model = Round
-    fields = ['round_number', 'view_round', 'email_address', 'display_name', 'view_submission', 'update_status', 'completed']
+    fields = ['round_number', 'view_round', 'display_name', 'email_address', 'view_submission', 'update_status', 'completed']
     readonly_fields = fields
     show_change_link = True
     extra = 0
