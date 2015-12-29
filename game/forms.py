@@ -11,6 +11,10 @@ class make_game(forms.ModelForm):
         fields = ["game_length", "email_address"]
         labels = {
             'game_length': ('Number of rounds'),
+            'email_address': ('Email address'),
+        }
+        help_texts = {
+            'game_length': ('How many players/rounds.'),
             'email_address': ('Your email address'),
         }
         
@@ -19,8 +23,13 @@ class make_new_round(forms.ModelForm):
         model = Round
         fields = ["display_name", "submission", "email_address"]
         labels = {
+            'display_name': ('Name'),
+            'submission': ('Sentence'),
+            'email_address': ('Next player'),
+        }
+        help_texts = {
             'display_name': ('Your name'),
-            'submission': ('First sentence'),
+            'submission': ('First sentence for the game'),
             'email_address': ('Next player\'s email address'),
         }
         
@@ -29,6 +38,10 @@ class make_picture_round(forms.ModelForm):
         model = Round
         fields = ["display_name", "email_address"]
         labels = {
+            'display_name': ('Name'),
+            'email_address': ('Next player'),
+        }
+        help_texts = {
             'display_name': ('Your name'),
             'email_address': ('Next player\'s email address'),
         }
@@ -38,18 +51,28 @@ class make_text_round(forms.ModelForm):
         model = Round
         fields = ["submission", "display_name", "email_address"]
         labels = {
+            'display_name': ('Name'),
+            'submission': ('Your sentence'),
+            'email_address': ('Next Player'),
+        }
+        help_texts = {
             'display_name': ('Your name'),
             'submission': ('Sentence describing the above picture'),
             'email_address': ('Next player\'s email address'),
         }
+        
         
 class make_last_text(forms.ModelForm):
     class Meta:
         model = Round
         fields = ["submission", "display_name"]
         labels = {
+            'display_name': ('Name'),
+            'submission': ('Your sentence'),
+        }
+        help_texts = {
             'display_name': ('Your name'),
-            'submission': ('Sentence describing the above picture   '),
+            'submission': ('Sentence describing the above picture'),
         }
         
 class make_last_picture(forms.ModelForm):
@@ -57,6 +80,9 @@ class make_last_picture(forms.ModelForm):
         model = Round
         fields = ["display_name"]
         labels = {
+            'display_name': ('Name'),
+        }
+        help_texts = {
             'display_name': ('Your name'),
         }
         
