@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-	<body>
-        <form action="/reset/" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}    
+<head>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/form-style-7.css' %}" />
+</head>
+<body>
+<div class="form-style-7">
+    <form action="/reset/" method="post">
+        {% csrf_token %}
+        <ul>
+            {% include "form_template.html" with form=form %}
             <input type="hidden" name="round" id="round" value="{{round.round_code}}">
-            <span title="Current players (cannot reuse):&#10;{{ round.game.get_all_emails | join:'&#10;' }}"><i>Hover over to view current players.</i></span><br>
-        <br><input type="submit" value="Submit" >
-	</body>
+            <span title="Current players (cannot reuse):&#10;{{ round.game.get_all_emails | join:'&#10;' }}"><i>Hover over to view current players.</i></span><br><br>
+            <li><input type="submit" value="Submit" ></li>
+        </ul>
+    </form>
+</div>
+</body>
 </html>

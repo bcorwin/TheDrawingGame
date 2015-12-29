@@ -1,12 +1,17 @@
 <html>
-<head></head>
+<head>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/form-style-7.css' %}" />
+</head>
 <body>
+    <div class="form-style-7">
     <form action="/game/">
         <input type="submit" value="New Game">
     </form>
     <form action="/howtoplay/">
         <input type="submit" value="How to play">
     </form>
+    </div>
 <!--    <form action="/view/" method="post">
         {% csrf_token %}
         <input type="text" name="game_code" value="Enter game code.">
