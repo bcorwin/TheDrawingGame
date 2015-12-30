@@ -212,6 +212,6 @@ class Round(models.Model):
         return(self.round_code)
         
 class Rando(models.Model):
-    email_address = models.EmailField()
+    email_address = models.EmailField(unique=True)
     confirmation_code = models.CharField(max_length=6, default=gen_code, unique=True)
     active = models.BooleanField(default=False)

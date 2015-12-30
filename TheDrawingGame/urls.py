@@ -10,5 +10,6 @@ urlpatterns = patterns('',
     url(r'^game/', include('game.urls')),
     url(r'^howtoplay/', TemplateView.as_view(template_name='howtoplay.html')),
     url(r'^view/(?P<code>.*)', views.view_game, name='view_game'),
+    url(r'^signup/(?P<code>.*)', views.signup, name='signup'),
     url(r'^$', views.home, name="home"),
 )

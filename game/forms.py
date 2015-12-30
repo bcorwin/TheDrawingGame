@@ -1,5 +1,5 @@
 from django import forms
-from game.models import Round, Game
+from game.models import Round, Game, Rando
 
 class SaveImgForm(forms.Form):
     img = forms.CharField(label='Image', max_length=10000000, widget=forms.HiddenInput(),
@@ -88,3 +88,14 @@ class make_last_picture(forms.ModelForm):
         
 class reset_round_form(forms.Form):
     new_email = forms.EmailField()
+    
+class modify_rando_form(forms.ModelForm):
+    class Meta:
+        model = Rando
+        fields = ["email_address"]
+        labels = {
+            'email_address': ('Email address'),
+        }
+        help_texts = {
+            'email_address': ('Email address you\'d like to add or remove from the Rando list'),
+        }

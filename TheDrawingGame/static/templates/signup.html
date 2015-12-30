@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/form-style-7.css' %}" />
+</head>
+<body>
+<header>
+    <a href='/howtoplay/' target="_blank">How to play</a>
+    <a href="mailto:feedback@thedrawinggame.net">Send feedback</a>
+</header>
+<div class="form-style-7">
+    <form action="/signup/" method="post">
+        {% csrf_token %}
+        <ul>
+            {% include "form_template.html" with form=form %}
+            <li><input type="submit" value="Submit" ></li>
+        </ul>
+    </form>
+</div>
+</body>
+</html>

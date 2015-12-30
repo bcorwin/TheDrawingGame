@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response
 from django.template.context_processors import csrf
 
 from game.do import get_round, get_game, select_forms, gen_round_response
-from game.forms import reset_round_form
+from game.forms import reset_round_form, modify_rando_form
     
 def show_round(request, code):
     round = None
@@ -87,3 +87,19 @@ def reset_round(request, code):
 def home(request):
     out = csrf(request)
     return(render_to_response('home.html', out))
+    
+def signup(request, code):
+    if code not in ("", None):
+        #If code is not blank, set that rando object to active/not active. return thank you notice (with results of active/passive switch)
+        #If code is invalid, return message saying so
+        #Method to set active/not active also set confirmation code to None
+        out = HttpResponse("Confirmation page not ready")
+    elif request.method == "POST":
+        #Method to see if email exists (not case sensitive). If exists, return Rando object else return None
+        #If email does not exist in Rando, save record. On save, send email to confirm.
+        #If email does exist and is active set confirmation code and send email to confirm deactivation
+        #If email does exist and is not active, reset confirmation code and send email to confirm activation
+        #Return with results of the above
+        out = HttpResponse("Page not ready")
+    else: out = render(request, 'signup.html', {"form":modify_rando_form()})
+    return(out)
