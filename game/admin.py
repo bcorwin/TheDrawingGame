@@ -27,7 +27,7 @@ class roundInline(admin.TabularInline):
 
 class gameAdmin(admin.ModelAdmin):
     list_display = ['game_code', 'email_address', 'current_round', 'game_length', 'completed']
-    list_filter = ['email_address', 'game_length', 'completed']
+    list_filter = ['game_length', 'completed']
     fields = ['view_game', 'current_round', 'game_length', 'email_address', 'completed']
     readonly_fields = ['view_game', 'completed', 'current_round']
     inlines = [roundInline]
