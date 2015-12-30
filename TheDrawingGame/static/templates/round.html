@@ -26,7 +26,10 @@
         </script>
 	</head>
 	<body>
-        
+    <header>
+        <a href='/howtoplay/' target="_blank">How to play</a>
+        <a href="mailto:feedback@thedrawinggame.net">Send feedback</a>
+    </header>
         {% if type == "F" %}
             <div class="form-style-7">
             <form action="/game/" method="post">
@@ -39,7 +42,6 @@
                 </ul>
             </form>
             </div>
-            <div><a href='/howtoplay/' target="_blank">How to play</a></div>
         {% elif type == "P" %}
             <div class="outer-canvas">
                 <div style="width: 1200px;margin:auto;">
@@ -62,7 +64,6 @@
                     </ul>
                 </form>
                 </div>
-                <div><a href='/howtoplay/' target="_blank">How to play</a></div>
             </div>
             <style>
                 div.outer-canvas {
@@ -109,7 +110,6 @@
                     <li><input type="submit" value="Submit" ></li>
                 </ul>
             </div>
-            <div><a href='/howtoplay/' target="_blank">How to play</a></div>
         {% endif %}
 	</body>
 </html>
