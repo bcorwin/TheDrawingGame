@@ -33,11 +33,12 @@ class gameAdmin(admin.ModelAdmin):
     inlines = [roundInline]
     
 class roundAdmin(admin.ModelAdmin):
-    list_display = ['round_code', 'round_number', 'display_name', 'email_address', 'update_status', 'update_status_date', 'completed', 'get_game_id']
+    list_display = ['round_code', 'round_number', 'display_name', 'email_address', 'update_status', 'update_status_date', 'completed', 'game_number']
     search_fields = ['round_code', 'display_name', 'email_address']
+    ordering = ['-game_number', '-round_number']
     list_filter = ['update_status', 'update_status_date', 'completed']
     fields = ['game', 'round_number', 'view_round', 'round_type', 'display_name', 'email_address', 'update_status', 'update_status_date', 'completed', 'view_submission']
-    readonly_fields = ['view_round', 'view_submission', 'update_status_date', 'get_game_id']
+    readonly_fields = ['view_round', 'view_submission', 'update_status_date']
     actions = [send_reminder, send_request]
     
 admin.site.register(Game, gameAdmin)

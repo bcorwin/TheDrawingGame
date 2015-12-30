@@ -75,6 +75,7 @@ class Game(models.Model):
     
 class Round(models.Model):
     game = models.ForeignKey(Game, on_delete=models.PROTECT)
+    game_number = models.PositiveIntegerField()
     
     round_number = models.PositiveSmallIntegerField()
     round_code = models.CharField(max_length=6, default=gen_code, unique=True)
@@ -91,10 +92,6 @@ class Round(models.Model):
     
     inserted_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    
-    def get_game_id(self):
-        return(self.game.pk)
-    get_game_id.short_description = 'Game ID'
      
     def set_status(self, status):
         self.update_status = status
@@ -173,6 +170,7 @@ class Round(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             g = self.game
+            self.game_number = g.pk
             prev_round = g.get_prev_round()
             if prev_round != None:
                 self.round_number = prev_round.round_number + 1
