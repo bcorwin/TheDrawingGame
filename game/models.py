@@ -85,6 +85,8 @@ class Round(models.Model):
     round_code = models.CharField(max_length=6, default=gen_code, unique=True)
     round_type = models.CharField(max_length=1, choices=(("T", "Text round"), ("P", "Picture round")))
     
+    is_rando = models.BooleanField(default=False)
+    
     email_address = models.EmailField()
     submission = models.TextField()
     display_name = models.CharField(max_length=32)
@@ -208,3 +210,8 @@ class Round(models.Model):
 
     def __str__(self):
         return(self.round_code)
+        
+class Rando(models.Model):
+    email_address = models.EmailField()
+    confirmation_code = models.CharField(max_length=6, default=gen_code, unique=True)
+    active = models.BooleanField(default=False)

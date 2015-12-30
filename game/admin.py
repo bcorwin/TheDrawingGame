@@ -1,5 +1,5 @@
 from django.contrib import admin, messages
-from game.models import Game, Round
+from game.models import Game, Round, Rando
 
 def send_request(modeladmin, request, queryset):
     if len(queryset) == 0: messages.error(request, "No rounds selected.")
@@ -43,3 +43,4 @@ class roundAdmin(admin.ModelAdmin):
     
 admin.site.register(Game, gameAdmin)
 admin.site.register(Round, roundAdmin)
+admin.site.register(Rando)
