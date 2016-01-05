@@ -127,19 +127,21 @@ class Round(models.Model):
         return(out)
         
     def reset_round(self, new_email):
-        out = None
+        out = "Unknown error. Please send feedback."
         if self.completed == True:
             out = "Original user has already completed the round."
         elif self.update_status == 2:
             new_r = self
-            
-            self.set_status(-1)
-            self.save()
-            
+                       
             new_r.pk = None
             new_r.email_address = new_email
             new_r.set_status(0)
             out = new_r.save()
+            
+            if out == None:
+                self.set_status(-1)
+                self.save()
+                out = None
         return(out)
         
     def wait_longer(self):
