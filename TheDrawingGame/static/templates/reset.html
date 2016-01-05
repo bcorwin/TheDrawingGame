@@ -12,7 +12,11 @@
         <ul>
             {% include "form_template.html" with form=form %}
             <input type="hidden" name="round" id="round" value="{{round.round_code}}">
-            <span title="Current players (cannot reuse):&#10;{{ round.game.get_all_emails | join:'&#10;' }}"><i>Hover over to view current players.</i></span><br><br>
+            <li>
+                <label>Current players:</label>
+                <textarea name="currentplayers" rows="{{ round.game.get_all_emails | length }}" readonly>{{ round.game.get_all_emails | join:'&#10;' }}</textarea>
+                <span>Cannot reuse any email addresses on this list</span>
+            </li>
             <li><input type="submit" value="Submit" ></li>
         </ul>
     </form>
