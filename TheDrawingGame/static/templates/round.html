@@ -26,80 +26,30 @@
         </script>
 	</head>
 	<body>
-    <header>
-        <a href='/howtoplay/' target="_blank">How to play</a>
-        <a href="mailto:feedback@thedrawinggame.net">Send feedback</a>
-    </header>
-        {% if type == "F" %}
+    {% include "header.html" %}
+    {% if type == "F" %}
+        <div class="form-style-7">
+        <form action="/game/" method="post">
+            {% csrf_token %}
+            <ul>
+            {% include "form_template.html" with form=form1 %}
+            {% include "form_template.html" with form=form2 %}
+            <input type="hidden" name="type" value="{{type}}">
+            <li><input type="submit" value="Submit" ></li>
+            </ul>
+        </form>
+        </div>
+    {% elif type == "P" %}
+        <div class="outer-canvas">
+            <div style="width: 1200px;margin:auto;">
+                <h3>Draw a picture for the below sentence:</h3>
+                <h4>{{ round.submission}}</h4>
+            </div>
+            <div id="canvasDiv"></div>
             <div class="form-style-7">
-            <form action="/game/" method="post">
+            <form name="submit_img_form" action="/game/" method="post" onsubmit = "return onsubmitform();">
                 {% csrf_token %}
-                <ul>
-                {% include "form_template.html" with form=form1 %}
-                {% include "form_template.html" with form=form2 %}
-                <input type="hidden" name="type" value="{{type}}">
-                <li><input type="submit" value="Submit" ></li>
-                </ul>
-            </form>
-            </div>
-        {% elif type == "P" %}
-            <div class="outer-canvas">
-                <div style="width: 1200px;margin:auto;">
-                    <h3>Draw a picture for the below sentence:</h3>
-                    <h4>{{ round.submission}}</h4>
-                </div>
-                <div id="canvasDiv"></div>
-                <div class="form-style-7">
-                <form name="submit_img_form" action="/game/" method="post" onsubmit = "return onsubmitform();">
-                    {% csrf_token %}
-                    {{ form3.as_p }}
-                    <ul>
-                        {% include "form_template.html" with form=form2 %}
-                        <input type="hidden" name="last_round" value="{{last_round}}">
-                        <input type="hidden" name="type" value="{{type}}">
-                        <input type="hidden" name="round_type" value="{{type}}">
-                        <input type="hidden" name="game" value="{{round.game.id}}">
-                        <span title="Current players (cannot reuse):&#10;{{ round.game.get_all_emails | join:'&#10;' }}"><i>Hover over to view current players.</i></span><br><br>
-                        <li><input type="submit" value="Submit" ></li>
-                    </ul>
-                </form>
-                </div>
-            </div>
-            <style>
-                div.outer-canvas {
-                    margin: auto;
-                    position: absolute;
-                    width: 100%;
-                }
-                #canvasDiv {
-                    width: 1200px;
-                    height: 600px;
-                    margin: auto;
-                }
-            </style>
-
-            <script type="text/javascript">
-                var canvas = new DrawingBoard.Board("canvasDiv");
-                canvas.addControl('Download');
-                
-                function onsubmitform() {
-                   //get drawingboard content
-                  var img = canvas.getImg();
-                  
-                  //we keep drawingboard content only if it's not the 'blank canvas'
-                  var imgInput = (canvas.blankCanvas == img) ? '' : img;
-                  
-                  //put the drawingboard content in the form field to send it to the server
-                  document.submit_img_form.img.value = imgInput
-                };
-            </script>
-        {% elif type == "T" %}
-            <div style= "text-align: center;">
-                <img  src="data:image/png;base64,{{ round.submission }}" border="1" style="border-color:#C0C0C0;">
-            </div>
-            <div class="form-style-7">
-            <form action="/game/" method="post">
-                {% csrf_token %}
+                {{ form3.as_p }}
                 <ul>
                     {% include "form_template.html" with form=form2 %}
                     <input type="hidden" name="last_round" value="{{last_round}}">
@@ -109,7 +59,54 @@
                     <span title="Current players (cannot reuse):&#10;{{ round.game.get_all_emails | join:'&#10;' }}"><i>Hover over to view current players.</i></span><br><br>
                     <li><input type="submit" value="Submit" ></li>
                 </ul>
+            </form>
             </div>
-        {% endif %}
+        </div>
+        <style>
+            div.outer-canvas {
+                margin: auto;
+                position: absolute;
+                width: 100%;
+            }
+            #canvasDiv {
+                width: 1200px;
+                height: 600px;
+                margin: auto;
+            }
+        </style>
+
+        <script type="text/javascript">
+            var canvas = new DrawingBoard.Board("canvasDiv");
+            canvas.addControl('Download');
+            
+            function onsubmitform() {
+               //get drawingboard content
+              var img = canvas.getImg();
+              
+              //we keep drawingboard content only if it's not the 'blank canvas'
+              var imgInput = (canvas.blankCanvas == img) ? '' : img;
+              
+              //put the drawingboard content in the form field to send it to the server
+              document.submit_img_form.img.value = imgInput
+            };
+        </script>
+    {% elif type == "T" %}
+        <div style= "text-align: center;">
+            <img  src="data:image/png;base64,{{ round.submission }}" border="1" style="border-color:#C0C0C0;">
+        </div>
+        <div class="form-style-7">
+        <form action="/game/" method="post">
+            {% csrf_token %}
+            <ul>
+                {% include "form_template.html" with form=form2 %}
+                <input type="hidden" name="last_round" value="{{last_round}}">
+                <input type="hidden" name="type" value="{{type}}">
+                <input type="hidden" name="round_type" value="{{type}}">
+                <input type="hidden" name="game" value="{{round.game.id}}">
+                <span title="Current players (cannot reuse):&#10;{{ round.game.get_all_emails | join:'&#10;' }}"><i>Hover over to view current players.</i></span><br><br>
+                <li><input type="submit" value="Submit" ></li>
+            </ul>
+        </div>
+    {% endif %}
 	</body>
 </html>

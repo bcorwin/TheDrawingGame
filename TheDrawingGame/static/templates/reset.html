@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/form-style-7.css' %}" />
 </head>
 <body>
+{% include "header.html" %}
 <div class="form-style-7">
     <form action="/reset/" method="post">
         {% csrf_token %}

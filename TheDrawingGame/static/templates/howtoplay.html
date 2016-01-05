@@ -1,30 +1,34 @@
 <html>
-<head></head>
+<head>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/form-style-7.css' %}" />
+</head>
 <body>
-    <h3>Start a game</h3>
-    <ol>
-        <li>Click <a href='/game/' target="_blank">here</a> to start a new game.</li>
-        <li>Select the number of rounds you would like to play (must be at least 3 and no more than 15).</li>
-        <li>Enter your email address and name.</li>
-        <li>Type a sentence that the next person will have to draw a picture for.</li>
-        <li>Enter the email address of the person you would like to send your sentence to.</li>
-    </ol>
-    <h3>Playing a round</h3>
-    <ol>
-        <li>Go to the link that you received in your email.</li>
-        <li>If there is a sentence on the top, draw a picture for that sentence. If there is a picture on top, write a sentence for that picture.</li>
-        <li>Enter your name</li>
-        <li>If prompted (meaning you are not the last person in the game), enter the email address of the next player.</li>
-        Note: You cannot reuse any email addresses. Hover over the text <i>Hover over to view current players</i> to see who has already played in this game
-        <li>When the game is completed, all players will get an email with a link to view the completed game.</li>
-    </ol>
-    <h3>Other notes</h3>
-    <ul>
-        <li>If a player has not completed their round within 24 hours, a reminder email will be sent to them.</li>
-        <li>If a player still has not completed their round within 24 hours of the reminder email the player before him/her will be asked what to do.</li>
-        <li>The previous player can either give the next player another 24 hours to complete the round or send the round to someone else.</li>
-        Note: The email address for the player that did not complete his/her round will not be able to be used any more in the current game.
-        <li>If the previous player does not respond to the above email after 24 hours, the game will 'expire' and an email will be sent to all players to view the partially completed game.</li>
-    <ul>
+{% include "header.html" %}
+<h3>Start a game</h3>
+<ol>
+    <li>Click <a href='/game/' target="_blank">here</a> to start a new game.</li>
+    <li>Select the number of rounds you would like to play (must be at least 3 and no more than 15).</li>
+    <li>Enter your email address and name.</li>
+    <li>Type a sentence that the next person will have to draw a picture for.</li>
+    <li>Enter the email address of the person you would like to send your sentence to.</li>
+</ol>
+<h3>Playing a round</h3>
+<ol>
+    <li>Go to the link that you received in your email.</li>
+    <li>If there is a sentence on the top, draw a picture for that sentence. If there is a picture on top, write a sentence for that picture.</li>
+    <li>Enter your name</li>
+    <li>If prompted (meaning you are not the last person in the game), enter the email address of the next player.</li>
+    Note: You cannot reuse any email addresses. Hover over the text <i>Hover over to view current players</i> to see who has already played in this game
+    <li>When the game is completed, all players will get an email with a link to view the completed game.</li>
+</ol>
+<h3>Other notes</h3>
+<ul>
+    <li>If a player has not completed their round within 24 hours, a reminder email will be sent to them.</li>
+    <li>If a player still has not completed their round within 24 hours of the reminder email the player before him/her will be asked what to do.</li>
+    <li>The previous player can either give the next player another 24 hours to complete the round or send the round to someone else.</li>
+    Note: The email address for the player that did not complete his/her round will not be able to be used any more in the current game.
+    <li>If the previous player does not respond to the above email after 24 hours, the game will 'expire' and an email will be sent to all players to view the partially completed game.</li>
+<ul>
 </body>
 </html>
