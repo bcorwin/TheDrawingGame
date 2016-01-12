@@ -177,11 +177,13 @@ class Round(models.Model):
         if not self.pk:
             g = self.game
             self.game_number = g.pk
-            prev_round = g.get_prev_round()
-            if prev_round != None:
-                self.round_number = prev_round.round_number + 1
-                if self.round_number > prev_round.game.game_length: raise ValidationError("Game has been completed. Cannot add another round.")
-            else: self.round_number = 1
+            prev_round = None
+            if self.round_number == None:
+                prev_round = g.get_prev_round()
+                if prev_round != None:
+                    self.round_number = prev_round.round_number + 1
+                    if self.round_number > prev_round.game.game_length: raise ValidationError("Game has been completed. Cannot add another round.")
+                else: self.round_number = 1
             self.round_code = self.new_code()
             
             try: self.check_email()
