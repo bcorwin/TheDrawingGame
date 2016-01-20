@@ -17,6 +17,7 @@ def status_check():
             #Set status to -2 (expired) and send final game out
             r.completed = True
             r.set_status(-2)
+            r.save()
             
             r.game.completed = True
             r.game.save()

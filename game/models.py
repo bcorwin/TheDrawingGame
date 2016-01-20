@@ -59,7 +59,14 @@ class Game(models.Model):
         
     def get_all_emails(self):
         emails = [R.email_address for R in self.get_rounds(all = True)]
-        if self.email_address not in emails: emails = [self.email_address] + emails
+        if self.email_address not in emails: emails = emails + [self.email_address]
+        return(emails)
+        
+    def get_prev_emails(self):
+        emails = [R.email_address for R in self.get_rounds(all = False)]
+        if self.email_address not in emails: emails = emails + [self.email_address]
+        emails.pop(0)
+        emails.pop(0)
         return(emails)
         
     def send_round_over_email(self, expired=False):
@@ -100,7 +107,6 @@ class Round(models.Model):
     def set_status(self, status):
         self.update_status = status
         self.update_status_date = timezone.now()
-        self.save()
         
     def view_round(self):
         link = settings.BASE_URL + "/game/" + self.round_code
@@ -131,11 +137,12 @@ class Round(models.Model):
         if self.completed == True:
             out = "Original user has already completed the round."
         elif self.update_status == 2:
-            new_r = self
-                       
-            new_r.pk = None
-            new_r.email_address = new_email
-            new_r.set_status(0)
+            new_r = Round(  game=self.game,
+                            email_address = new_email,
+                            round_number = self.round_number,
+                            round_type=self.round_type,
+                            display_name=self.display_name,
+                            submission=self.submission)
             out = new_r.save()
             
             if out == None:
@@ -149,6 +156,7 @@ class Round(models.Model):
         
     def send_request(self):
         self.set_status(2)
+        self.save()
     
         subject = self.email_address + " has not completed their round."
         text_content = ""           
@@ -159,6 +167,7 @@ class Round(models.Model):
     
     def send_reminder_email(self):
         self.set_status(1)
+        self.save()
         
         subject = "Don't forget to play The Drawing Game round that " + self.display_name + " sent you!"
         text_content = ""
@@ -202,10 +211,10 @@ class Round(models.Model):
                 g.send_round_over_email()
             else: self.send_new_round_email()
                 
-            ##Set previous round to completed
+            ##Set previous round to completed and email previous players
             if prev_round != None:
                 prev_round.completed = True
-                prev_round.save()
+                prev_round.save()                    
         else:
             super(Round, self).save(*args, **kwargs)
         return(None)
