@@ -143,7 +143,7 @@ class Round(models.Model):
                             round_type=self.round_type,
                             display_name=self.display_name,
                             submission=self.submission)
-            out = new_r.save()
+            out = new_r.save(is_reset=True)
             
             if out == None:
                 self.set_status(-1)
@@ -175,14 +175,22 @@ class Round(models.Model):
         
         send_email([self.email_address], subject=subject, text_content=text_content, html_content=html_content)
     
-    def send_new_round_email(self):
+    def send_new_round_email(self, is_reset=False):
         subject = self.display_name + " has sent you a Drawing Game round!"
         text_content = ""
         html_content = "To play your round, click <a href='" + settings.BASE_URL + "/game/" + self.round_code + "'>here</a>."
         
         send_email([self.email_address], subject=subject, text_content=text_content, html_content=html_content)
+        
+        
+        if self.round_number > 1 and is_reset == False:            
+            subject = self.display_name + " has played their round!"
+            to_emails = self.game.get_prev_emails()
+            html_content = "When all rounds have been played, you can view your game <a href='" + settings.BASE_URL + "/view/" + self.game.game_code + "'>here</a>."
+            
+            send_email(to_emails, subject=subject, text_content=text_content, html_content=html_content)
     
-    def save(self, *args, **kwargs):
+    def save(self, is_reset=False, *args, **kwargs):
         if not self.pk:
             g = self.game
             self.game_number = g.pk
@@ -209,7 +217,7 @@ class Round(models.Model):
                 self.completed = True
                 self.save()
                 g.send_round_over_email()
-            else: self.send_new_round_email()
+            else: self.send_new_round_email(is_reset)
                 
             ##Set previous round to completed and email previous players
             if prev_round != None:
